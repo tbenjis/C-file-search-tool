@@ -5,7 +5,7 @@ The application searches through a file, replaces words, marks search results an
 
 Works on Linux. 
 
-Usage: ./search_tool -f <input_filename> -s <search word> -r <replace word> -o <output_file> -h
+Usage: ./search_tool -f input_filename -s search_word -r replace_word -o output_file -h
 
 
 
