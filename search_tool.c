@@ -67,13 +67,12 @@ int main(int argc, char *argv[]) {
 
 void Help(char *arg) {
     printf("Usage: %s -f <input_filename> -s <search word> -r <replace word> -o <output_file> -h\n", arg);
-    printf("-f : This option define input file name which is used for processing\n");
-    printf("-s : This option define search word which we need to search in input file. If user want to search two words\n");
-    printf("in this case you can use with double quote chars. (Ex: \"sample word\")\n");
-    printf("-r : This option define replace word which replaced with searched one. This option also should support\n");
-    printf("double quote input as -s option have.\n");
-    printf("-o : This option define output file in this case result redirect into this file.\n");
-    printf("-h : This option gives help text to user.\n");
+    printf("-f : This option defines the input file name to be searched through\n");
+    printf("-s : This option defines the word or phrase which we need to search\n");
+    printf(" (Ex: \"sample word\")\n");
+    printf("-r : This option is used to replace a word or phrase with searched word or phrase. \n");
+    printf("-o : This option defines the output filename in this case the result is redirected to this file.\n");
+    printf("-h : Help.\n");
 }
 
 //usage part
