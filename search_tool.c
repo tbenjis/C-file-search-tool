@@ -2,6 +2,7 @@
  * Search and replace word application
  * Usage: ./search_tool -f <input_filename> -s <search word> -r <replace word> -o <output_file> -h
  * tunde@stackarena.com
+ * @Author: Tunde Olabenjo
  */
 #include<stdio.h>
 #include<string.h>
