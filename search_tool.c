@@ -17,7 +17,7 @@ void Usage(char *arg); //usage function
 void Help(char *arg); //help menu
 void markLine(char *, char *, char *); //used to underline a found string with ^
 int countSubstring(const char *str, const char *sub); //used to count the number of occurence of string
-int replaceString(char *find, char *replace, char *infile, char *outfile, int is_out); //replace proc
+int replaceString(char *find, char *replace, char *infile, char *outfile); //replace proc
 void outputLine(char *); //stdoutput proc
 char *str_replace(char *orig, char *rep, char *with); // the main *ptr replace proc
 
