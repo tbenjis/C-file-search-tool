@@ -7,6 +7,9 @@
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
+#include <getopt.h>
+
+#define MAX_OPT_STRLEN 255
 
 //Functions we are using
 int search_file(char *str, char *fname); //the main search function
@@ -28,30 +31,65 @@ int main(int argc, char *argv[]) {
      * @param argv
      * @return 
      */
-    if (argc == 2 && (0 == strcmp(argv[1], "-h"))) {
+    int option = 0;
+    // init empty strings
+    char opt_filename[MAX_OPT_STRLEN] = {0};
+    char opt_string[MAX_OPT_STRLEN] = {0};
+    char opt_replace[MAX_OPT_STRLEN] = {0};
+    char opt_output[MAX_OPT_STRLEN] = {0};
+    int opt_help = 0;
+    while ((option = getopt(argc, argv,"hf:s:r:o:")) != -1) {
+        switch (option) {
+            case 'h':
+                opt_help = 1;
+                break;
+            case 'f':
+                strncpy(optarg, opt_filename, strlen(optarg));
+                break;
+            case 's':
+                strncpy(optarg, opt_string, strlen(optarg));
+                break;
+            case 'r':
+                strncpy(optarg, opt_replace, strlen(optarg));
+                break;
+            case 'o':
+                strncpy(optarg, opt_output, strlen(optarg));
+                break;
+            default:
+                printf("Invalid option: -%c", option);
+                Usage(argv[0]);
+                exit(1);
+        }
+    }
+    if (opt_help != 0) {
         Help(argv[0]);
         exit(1);
-    } else if (argc < 5) {
+    } else if (opt_filename[0] == 0) {
+    	printf("Missing mandatory argument (-f)\n");
         Usage(argv[0]);
         exit(1);
-    } else if (argc == 5 && (0 == strcmp(argv[1], "-f")) && (0 == strcmp(argv[3], "-s"))) {
+    } else if (opt_string[0] == 0) {
+    	printf("Missing mandatory argument (-s)\n");
+        Usage(argv[0]);
+        exit(1);
+    } else if (opt_replace[0] == 0 && opt_output[0] == 0) {
         system("clear");
-        result = search_file(argv[2], argv[4]);
+        result = search_file(opt_filename, opt_string);
         if (result == -1) {
             perror("Error"); //perror
             exit(1);
         }
-    } else if (argc == 7 && (0 == strcmp(argv[1], "-f")) && (0 == strcmp(argv[3], "-s")) && (0 == strcmp(argv[5], "-r"))) {
+    } else if (opt_replace[0] != 0 && opt_output[0] == 0) {
         system("clear");
         //replace string with no output file = 0
-        result = replaceString(argv[4], argv[6], argv[2], argv[6], 0);
+        result = replaceString(opt_string, opt_replace, opt_filename, opt_replace, 0);
         if (result == -1) {
             perror("Error");
             exit(1);
         }
-    } else if (argc == 9 && (0 == strcmp(argv[1], "-f")) && (0 == strcmp(argv[3], "-s")) && (0 == strcmp(argv[5], "-r")) && (0 == strcmp(argv[7], "-o"))) {
+    } else if (opt_replace[0] != 0 && opt_output[0] != 0) {
         //replace string and send to output file
-        result = replaceString(argv[4], argv[6], argv[2], argv[8], 1);
+        result = replaceString(opt_string, opt_replace, opt_filename, opt_output, 1);
         if (result == -1) {
             perror("Error");
             exit(1);
