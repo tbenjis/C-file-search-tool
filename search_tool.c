@@ -72,31 +72,20 @@ int main(int argc, char *argv[]) {
     	printf("Missing mandatory argument (-s)\n");
         Usage(argv[0]);
         exit(1);
-    } else if (opt_replace[0] == 0 && opt_output[0] == 0) {
+    } else if (opt_replace[0] == 0) {
         system("clear");
         result = search_file(opt_filename, opt_string);
         if (result == -1) {
             perror("Error"); //perror
             exit(1);
         }
-    } else if (opt_replace[0] != 0 && opt_output[0] == 0) {
-        system("clear");
-        //replace string with no output file = 0
-        result = replaceString(opt_string, opt_replace, opt_filename, opt_replace, 0);
-        if (result == -1) {
-            perror("Error");
-            exit(1);
-        }
-    } else if (opt_replace[0] != 0 && opt_output[0] != 0) {
-        //replace string and send to output file
-        result = replaceString(opt_string, opt_replace, opt_filename, opt_output, 1);
-        if (result == -1) {
-            perror("Error");
-            exit(1);
-        }
     } else {
-        Usage(argv[0]);
-        exit(1);
+        system("clear");
+        result = replaceString(opt_string, opt_replace, opt_filename, opt_output);
+        if (result == -1) {
+            perror("Error");
+            exit(1);
+        }
     }
     return (0);
 }
@@ -212,7 +201,7 @@ int search_file(char *fname, char *str) {
  * @param is_out
  * @return 
  */
-int replaceString(char *find, char *replace, char *infile, char *outfile, int is_out) {
+int replaceString(char *find, char *replace, char *infile, char *outfile) {
     char buff[BUFSIZ]; // the input line
     FILE *in, *out; //input and output files
     char *srchstr;
@@ -221,7 +210,7 @@ int replaceString(char *find, char *replace, char *infile, char *outfile, int is
         return (-1);
     }
     //output file option added
-    if (is_out == 1) {
+    if (*outfile != 0) {
         if ((out = fopen(outfile, "w")) == NULL) {
             return (-1);
         }
