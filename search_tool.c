@@ -4,12 +4,9 @@
  * tunde@stackarena.com
  * @Author: Tunde Olabenjo
  */
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <getopt.h>
-
-#define MAX_STRLEN 512
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
 
 //Functions we are using
 int search_file(char *str, char *fname); //the main search function
@@ -17,80 +14,52 @@ void Usage(char *arg); //usage function
 void Help(char *arg); //help menu
 void markLine(char *, char *, char *); //used to underline a found string with ^
 int countSubstring(const char *str, const char *sub); //used to count the number of occurence of string
-int replaceString(char *find, char *replace, char *infile, char *outfile); //replace proc
+int replaceString(char *find, char *replace, char *infile, char *outfile, int is_out); //replace proc
 void outputLine(char *); //stdoutput proc
 char *str_replace(char *orig, char *rep, char *with); // the main *ptr replace proc
 
 //Our main function.
-/**
- * Get the arguments from the command line
- * @param argc
- * @param argv
- * @return 
- */
+
 int main(int argc, char *argv[]) {
     int result;
-
-    // init empty strings
-    char opt_filename[MAX_STRLEN] = {0};
-    char opt_string[MAX_STRLEN] = {0};
-    char opt_replace[MAX_STRLEN] = {0};
-    char opt_output[MAX_STRLEN] = {0};
-    int opt_help = 0;
-    int option = 0;
-
-    while ((option = getopt(argc, argv,"hf:s:r:o:")) != -1) {
-        switch (option) {
-            case 'h':
-                opt_help = 1;
-                break;
-            case 'f':
-                strncpy(optarg, opt_filename, MAX_STRLEN);
-                break;
-            case 's':
-                strncpy(optarg, opt_string, MAX_STRLEN);
-                break;
-            case 'r':
-                strncpy(optarg, opt_replace, MAX_STRLEN);
-                break;
-            case 'o':
-                strncpy(optarg, opt_output, MAX_STRLEN);
-                break;
-            default:
-                printf("Invalid option: -%c", option);
-                Usage(argv[0]);
-                exit(1);
-        }
-    }
-
-    if (opt_help != 0) {
+    /**
+     * Get the arguments from the command line
+     * @param argc
+     * @param argv
+     * @return 
+     */
+    if (argc == 2 && (0 == strcmp(argv[1], "-h"))) {
         Help(argv[0]);
         exit(1);
-    }
-    if (opt_filename[0] == 0) {
-    	printf("Missing mandatory argument (-f)\n");
+    } else if (argc < 5) {
+        Usage(argv[0]);
+        exit(1);
+    } else if (argc == 5 && (0 == strcmp(argv[1], "-f")) && (0 == strcmp(argv[3], "-s"))) {
+        system("clear");
+        result = search_file(argv[2], argv[4]);
+        if (result == -1) {
+            perror("Error"); //perror
+            exit(1);
+        }
+    } else if (argc == 7 && (0 == strcmp(argv[1], "-f")) && (0 == strcmp(argv[3], "-s")) && (0 == strcmp(argv[5], "-r"))) {
+        system("clear");
+        //replace string with no output file = 0
+        result = replaceString(argv[4], argv[6], argv[2], argv[6], 0);
+        if (result == -1) {
+            perror("Error");
+            exit(1);
+        }
+    } else if (argc == 9 && (0 == strcmp(argv[1], "-f")) && (0 == strcmp(argv[3], "-s")) && (0 == strcmp(argv[5], "-r")) && (0 == strcmp(argv[7], "-o"))) {
+        //replace string and send to output file
+        result = replaceString(argv[4], argv[6], argv[2], argv[8], 1);
+        if (result == -1) {
+            perror("Error");
+            exit(1);
+        }
+    } else {
         Usage(argv[0]);
         exit(1);
     }
-    if (opt_string[0] == 0) {
-    	printf("Missing mandatory argument (-s)\n");
-        Usage(argv[0]);
-        exit(1);
-    }
-
-    // arguments OK, can proceed
-    system("clear");
-
-    if (opt_replace[0] == 0)
-        result = search_file(opt_filename, opt_string);
-    else
-        result = replaceString(opt_string, opt_replace, opt_filename, opt_output);
-
-    if (result == -1) {
-        perror("Error"); //perror
-        exit(1);
-    }
-
     return (0);
 }
 
@@ -120,13 +89,13 @@ void Usage(char *arg) {
  */
 int search_file(char *fname, char *str) {    
     int count_line = 1;    
-    char temp[MAX_STRLEN];
+    char temp[512];
     char *p;
     char *d; //content pointer
-    FILE *file_pointer; //file pointer
-    char a[MAX_STRLEN]; //we use this to copy the content
-    char data[MAX_STRLEN]; //our final data
-    int its_found = 0;
+	FILE *file_pointer; //file pointer
+    char a[512]; //we use this to copy the content
+    char data[512]; //our final data
+	int its_found = 0;
 
     //open file
     if ((file_pointer = fopen(fname, "r")) == NULL) {
@@ -135,7 +104,7 @@ int search_file(char *fname, char *str) {
         printf("%s, file searched for word \"%s\"\n", fname, str);
     }
 
-    while (fgets(temp, MAX_STRLEN, file_pointer) != NULL) {
+    while (fgets(temp, 512, file_pointer) != NULL) {
 
         //count the number of occurrences
         int count = countSubstring(temp, str);
@@ -144,10 +113,11 @@ int search_file(char *fname, char *str) {
             //display and copy the initial temp to data
             printf("\nL%d/%d: %s", count_line, count, temp);
             //adds a new line to the end of the last line
-            if(feof(file_pointer)) {
-        	sprintf(temp,"%s \n",temp);
-        	printf("\n");
-            }
+            if(feof(file_pointer))
+        	{
+        		sprintf(temp,"%s \n",temp);
+        		printf("\n");
+        	}
             //copy the line into data array including the line numbers
             sprintf(data, "L%d/%d: %s", count_line, count, temp);
 
@@ -195,13 +165,16 @@ int search_file(char *fname, char *str) {
 }
 
 /**
+ * Gets the replacement option -r for onscreen and
+ * -o for output file -o = 1 r without -o = 0
  * @param find
  * @param replace
  * @param infile
  * @param outfile
+ * @param is_out
  * @return 
  */
-int replaceString(char *find, char *replace, char *infile, char *outfile) {
+int replaceString(char *find, char *replace, char *infile, char *outfile, int is_out) {
     char buff[BUFSIZ]; // the input line
     FILE *in, *out; //input and output files
     char *srchstr;
@@ -210,7 +183,7 @@ int replaceString(char *find, char *replace, char *infile, char *outfile) {
         return (-1);
     }
     //output file option added
-    if (*outfile != 0) {
+    if (is_out == 1) {
         if ((out = fopen(outfile, "w")) == NULL) {
             return (-1);
         }
