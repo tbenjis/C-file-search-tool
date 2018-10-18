@@ -1,0 +1,7 @@
+language: c
+sudo: false
+compiler:
+  - gcc
+before_script:
+  - gcc -o search_tool search_tool.c
+script: ./search_tool -f README.md -s "application"
