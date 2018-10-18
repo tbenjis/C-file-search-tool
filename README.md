@@ -6,8 +6,9 @@ The application searches through a file, replaces words, underlines the search r
 
 <strong>Sample output: </strong>
 ```
-File searched for word "application"
-L4/1: The application searches through a file, replaces words, marks search results and writes results to an output file.
+Searched for word "application"
+
+L4/1: The application searches through a file, replaces words, marks search results...
           ^^^^^^^^^^^     
 ```
 
