@@ -1,0 +1,19 @@
+# Use the latest 2.1 version of CircleCI pipeline process engine.
+# See: https://circleci.com/docs/2.0/configuration-reference
+version: 2.1
+
+jobs:
+  build_gcc_latest:
+    docker:
+      - image: gcc:latest
+    steps:
+      - checkout
+      - run: mkdir -p build && cd build
+      - run: gcc -o search_tool search_tool.c
+      - run: ./search_tool -f README.md -s "application"
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build_gcc_latest
