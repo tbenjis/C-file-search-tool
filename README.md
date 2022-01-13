@@ -1,7 +1,7 @@
 # Simple Search Tool in C
 
 [![Build Status](https://travis-ci.com/tbenjis/C-file-search-tool.svg?branch=master)](https://travis-ci.com/tbenjis/C-file-search-tool)
-[![CircleCI](https://circleci.com/gh/circleci/circleci-docs/tree/teesloane-patch-5.svg?style=svg)](https://circleci.com/gh/circleci/circleci-docs/?branch=master)
+[![CircleCI](https://circleci.com/gh/tbenjis/C-file-search-tool.svg?style=shield)](https://circleci.com/gh/tbenjis/C-file-search-tool/?branch=master)
 
 The application searches through a file, replaces words, underlines the search results, specifies the line number, starting character location, and writes results to an output file.
 
